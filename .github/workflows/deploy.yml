@@ -18,16 +18,16 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
       - name: Install function dependencies
         run: cd functions && npm install
 
+      - name: Write service account key
+        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > /tmp/sa.json
+
       - name: Deploy to Firebase
         run: firebase deploy --only functions --project sellpoint-ea3d2
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa.json
